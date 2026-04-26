@@ -35,32 +35,46 @@ export default function Header() {
           <a href="#top" className="id-mark">
             DS
           </a>
-          <nav className="nav-desktop">
-            <ul className="nav-list">
-              {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <a href={item.href}>
-                    <span className="num">{item.num}</span>
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <button
-            type="button"
-            className={`nav-toggle${open ? " is-open" : ""}`}
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
-          >
-            <span className="nav-toggle-label">Menu</span>
-            <span className="nav-toggle-icon" aria-hidden="true">
-              <span className="bar" />
-              <span className="bar" />
-              <span className="bar" />
-            </span>
-          </button>
+          <div className="header-actions">
+            <nav className="nav-desktop">
+              <ul className="nav-list">
+                {NAV_ITEMS.map((item) => (
+                  <li key={item.href}>
+                    <a href={item.href}>
+                      <span className="num">{item.num}</span>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <a
+              href="/diego-siena-cv.pdf"
+              className="cv-link"
+              download
+              aria-label="Download CV (PDF)"
+            >
+              <span className="cv-link-icon" aria-hidden="true">
+                ↓
+              </span>
+              <span className="cv-link-label">CV</span>
+              <span className="cv-link-meta">PDF</span>
+            </a>
+            <button
+              type="button"
+              className={`nav-toggle${open ? " is-open" : ""}`}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((o) => !o)}
+            >
+              <span className="nav-toggle-label">Menu</span>
+              <span className="nav-toggle-icon" aria-hidden="true">
+                <span className="bar" />
+                <span className="bar" />
+                <span className="bar" />
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 

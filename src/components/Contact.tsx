@@ -171,6 +171,30 @@ export default function Contact() {
                 </a>
               ))}
             </div>
+            <a
+              href="/diego-siena-cv.pdf"
+              download
+              className="cv-callout"
+              aria-label="Download CV (PDF)"
+            >
+              <span className="cv-callout-icon" aria-hidden="true">
+                ↓
+              </span>
+              <span className="cv-callout-body">
+                <span className="cv-callout-title">
+                  Need a printable version?
+                </span>
+                <span className="cv-callout-meta">
+                  Download CV
+                  <span className="cv-callout-sep">·</span>
+                  PDF
+                  <span className="cv-callout-sep">·</span>2 pages
+                </span>
+              </span>
+              <span className="cv-callout-arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
           </aside>
         </div>
       </div>
