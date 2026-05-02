@@ -1339,6 +1339,51 @@ body.nav-locked {
   line-height: 1;
   transition: transform 0.25s var(--ease);
 }
+.form-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.form-submit:disabled:hover {
+  background: var(--fg);
+  border-color: var(--fg);
+  color: var(--bg);
+}
+.form-submit:disabled:hover .submit-arrow {
+  transform: none;
+}
+
+.field-error {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.field-error-form {
+  margin-top: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+}
+
+.form-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.form-confirm-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fg-2);
+}
+.form-confirm-meta {
+  font-size: 0.86rem;
+  color: var(--fg-muted);
+}
 
 .contact-aside {
   display: flex;

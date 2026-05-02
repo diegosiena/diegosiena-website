@@ -8,11 +8,10 @@
   - Payload CMS?
   - Metadata, tags, categories, etc.
   - SEO
-- [ ] Contact page form implementation
+- [X] Contact page form implementation
   - Validation
   - Sending email with Resend
   - Notification email to the user - automation, send email to user when the form is submitted.
-- [ ] Download my CV
+- [X] Download my CV
   - PDF file
-- [ ] AI Chat about me (ask anything about diego siena)
 - [ ] Delta Rocket as my company

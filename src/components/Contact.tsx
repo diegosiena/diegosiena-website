@@ -1,6 +1,8 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useActionState } from "react";
+import { submitContactForm } from "@/app/actions/contact";
+import { type ContactFormState, SUBJECT_OPTIONS } from "@/lib/contact";
 
 const TILES = [
   {
@@ -26,10 +28,16 @@ const TILES = [
   },
 ];
 
+const INITIAL_STATE: ContactFormState = { status: "idle" };
+
 export default function Contact() {
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
+  const [state, formAction, pending] = useActionState(
+    submitContactForm,
+    INITIAL_STATE,
+  );
+
+  const errors = state.errors ?? {};
+  const values = state.values ?? {};
 
   return (
     <section id="contact">
@@ -56,93 +64,182 @@ export default function Contact() {
         </div>
 
         <div className="contact-body" data-reveal data-reveal-delay="1">
-          <form className="contact-form" noValidate onSubmit={onSubmit}>
-            <div className="form-head">
-              <span className="form-tag">Send a message</span>
-              <span className="form-meta">form · async</span>
-            </div>
+          {state.status === "success" ? (
+            <output className="contact-form form-confirm">
+              <div className="form-head">
+                <span className="form-tag">Message received</span>
+                <span className="form-meta">async · sent</span>
+              </div>
+              <p className="form-confirm-body">
+                Got it. I read everything that comes through this form, and
+                I&apos;ll reply personally — usually within a few days.
+              </p>
+              <p className="form-confirm-body form-confirm-meta">
+                Check your inbox for a confirmation. If you don&apos;t see it,
+                peek in spam.
+              </p>
+            </output>
+          ) : (
+            <form className="contact-form" action={formAction}>
+              <div className="form-head">
+                <span className="form-tag">Send a message</span>
+                <span className="form-meta">form · async</span>
+              </div>
 
-            <div className="form-row form-row-split">
-              <div className="form-field">
-                <label htmlFor="cf-name" className="field-label">
-                  Your name
-                </label>
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  width: 1,
+                  height: 1,
+                  overflow: "hidden",
+                }}
+              >
+                <label htmlFor="cf-company">Company (leave blank)</label>
                 <input
                   type="text"
-                  id="cf-name"
-                  name="name"
-                  className="field-input"
-                  placeholder="Diego Siena"
-                  autoComplete="name"
-                />
-              </div>
-              <div className="form-field">
-                <label htmlFor="cf-email" className="field-label">
-                  Reply to
-                </label>
-                <input
-                  type="email"
-                  id="cf-email"
-                  name="email"
-                  className="field-input"
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="cf-subject" className="field-label">
-                  About
-                </label>
-                <select
-                  id="cf-subject"
-                  name="subject"
-                  className="field-input field-select"
+                  id="cf-company"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
                   defaultValue=""
-                >
-                  <option value="" disabled>
-                    Pick a topic — or just write
-                  </option>
-                  <option value="ai">Building an AI product</option>
-                  <option value="leadership">
-                    Engineering leadership / CTO talk
-                  </option>
-                  <option value="advisory">Advisory / consulting</option>
-                  <option value="speaking">
-                    Speaking / podcast / interview
-                  </option>
-                  <option value="other">Something else</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="cf-message" className="field-label">
-                  Message
-                </label>
-                <textarea
-                  id="cf-message"
-                  name="message"
-                  className="field-input field-textarea"
-                  rows={5}
-                  placeholder="What's on your mind? No pressure on length — a couple of sentences is fine."
                 />
               </div>
-            </div>
 
-            <div className="form-foot">
-              <span className="form-foot-note">
-                Replies usually within a few days.
-              </span>
-              <button type="submit" className="form-submit">
-                <span>Send message</span>
-                <span className="submit-arrow">↗</span>
-              </button>
-            </div>
-          </form>
+              <div className="form-row form-row-split">
+                <div className="form-field">
+                  <label htmlFor="cf-name" className="field-label">
+                    Your name
+                  </label>
+                  <input
+                    type="text"
+                    id="cf-name"
+                    name="name"
+                    className="field-input"
+                    placeholder="Diego Siena"
+                    autoComplete="name"
+                    required
+                    maxLength={120}
+                    defaultValue={values.name ?? ""}
+                    aria-invalid={errors.name ? true : undefined}
+                    aria-describedby={errors.name ? "cf-name-err" : undefined}
+                  />
+                  {errors.name && (
+                    <span id="cf-name-err" className="field-error">
+                      {errors.name}
+                    </span>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label htmlFor="cf-email" className="field-label">
+                    Reply to
+                  </label>
+                  <input
+                    type="email"
+                    id="cf-email"
+                    name="email"
+                    className="field-input"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    required
+                    maxLength={200}
+                    defaultValue={values.email ?? ""}
+                    aria-invalid={errors.email ? true : undefined}
+                    aria-describedby={errors.email ? "cf-email-err" : undefined}
+                  />
+                  {errors.email && (
+                    <span id="cf-email-err" className="field-error">
+                      {errors.email}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label htmlFor="cf-subject" className="field-label">
+                    About
+                  </label>
+                  <select
+                    id="cf-subject"
+                    name="subject"
+                    className="field-input field-select"
+                    required
+                    defaultValue={values.subject ?? ""}
+                    aria-invalid={errors.subject ? true : undefined}
+                    aria-describedby={
+                      errors.subject ? "cf-subject-err" : undefined
+                    }
+                  >
+                    <option value="" disabled>
+                      Pick a topic — or just write
+                    </option>
+                    {SUBJECT_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.subject && (
+                    <span id="cf-subject-err" className="field-error">
+                      {errors.subject}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label htmlFor="cf-message" className="field-label">
+                    Message
+                  </label>
+                  <textarea
+                    id="cf-message"
+                    name="message"
+                    className="field-input field-textarea"
+                    rows={5}
+                    required
+                    minLength={10}
+                    maxLength={5000}
+                    placeholder="What's on your mind? No pressure on length — a couple of sentences is fine."
+                    defaultValue={values.message ?? ""}
+                    aria-invalid={errors.message ? true : undefined}
+                    aria-describedby={
+                      errors.message ? "cf-message-err" : undefined
+                    }
+                  />
+                  {errors.message && (
+                    <span id="cf-message-err" className="field-error">
+                      {errors.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {errors._form && (
+                <div className="form-row">
+                  <span className="field-error field-error-form" role="alert">
+                    {errors._form}
+                  </span>
+                </div>
+              )}
+
+              <div className="form-foot">
+                <span className="form-foot-note">
+                  Replies usually within a few days.
+                </span>
+                <button
+                  type="submit"
+                  className="form-submit"
+                  disabled={pending}
+                >
+                  <span>{pending ? "Sending…" : "Send message"}</span>
+                  <span className="submit-arrow">↗</span>
+                </button>
+              </div>
+            </form>
+          )}
 
           <aside className="contact-aside">
             <div className="aside-head">
